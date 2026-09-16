@@ -1,150 +1,282 @@
-# java-networking-suite
-Java networking suite showcasing TCP chat, UDP messaging, and UDP multicast broadcasting with multi-client console demos (IntelliJ-ready).
+# Java Networking Suite
 
+A Java networking project demonstrating **socket programming and network communication** through three practical client-server applications: **TCP Chat, UDP Messaging, and UDP Multicast**.
 
-# 🌐 Java Networking Suite — TCP • UDP • Multicast
+The project provides hands-on examples of connection-oriented and connectionless communication, multi-client management, datagram exchange, and one-to-many network broadcasting.
 
-A single repository showcasing **Java socket programming** with three mini-projects:
-1) **TCP Chat** (multi-client)
-2) **UDP Messaging** (client/server broadcast-style)
-3) **UDP Multicast Broadcast** (one sender → many receivers)
+## Project Overview
 
-This repo includes runnable examples (IntelliJ-ready) and console screenshots.
+The project is divided into three independent networking applications:
 
----
+```text id="7j7d1r"
+                    Java Networking Suite
+                           │
+          ┌────────────────┼────────────────┐
+          │                │                │
+          ▼                ▼                ▼
+      TCP Chat        UDP Messaging    UDP Multicast
+          │                │                │
+     Client/Server     Client/Server    One-to-Many
+          │                │                │
+    Multi-client       Datagrams       Multicast Group
+```
 
-## ✅ What’s Inside
+## 1. TCP Chat
 
-### 1) TCP Chat (Client/Server)
-- Multi-client TCP chat
-- Public messages (broadcast)
-- Private messages: `/msg <user> <message>`
-- List connected users: `/liste`
-- Clean disconnect (optional `/quit`)
+A multi-client chat application based on **TCP sockets**.
 
-### 2) UDP Messaging (Client/Server)
-- UDP server receives datagrams and broadcasts messages to connected clients
-- Multiple UDP clients can send and receive
-- Demonstrates connectionless messaging + address/port tracking
+### Features
 
-### 3) UDP Multicast Broadcast
-- `AgentServer` sends UDP datagrams to a multicast group
-- Multiple `AgentClient` instances join the group and receive the same message
-- Demonstrates group communication (one-to-many)
+* Client-server communication
+* Multiple simultaneous clients
+* Public message broadcasting
+* Private messaging between users
+* Display of connected users
+* Graceful client disconnection
 
----
+### Available Commands
 
-## 📁 Project Layout
+```text id="bq5qwi"
+/msg <username> <message>   → Send a private message
+/liste                      → Display connected users
+/quit                       → Disconnect from the server
+```
 
-├── tcp/ # TCP chat (server + client)
-├── udp/ # UDP messaging (server + client)
-├── multicast/ # UDP multicast broadcast (server + client)
-└── screenshots/ # Console screenshots used in this README
+Any other text is treated as a public message.
 
+### Communication Model
 
----
+```text id="0t7ydx"
+Client 1 ─────┐
+Client 2 ─────┼────► TCP Server
+Client 3 ─────┘          │
+                         │
+                    Message Handling
+                         │
+                 ┌───────┼───────┐
+                 ▼       ▼       ▼
+              Client 1 Client 2 Client 3
+```
 
-## ⚙️ Requirements
-- **Java JDK 17+** (tested with JDK 21)
-- IntelliJ IDEA (recommended) or any Java IDE
+## 2. UDP Messaging
 
----
+A client-server messaging application using **UDP datagrams**.
 
-## ▶️ How to Run (IntelliJ)
+The server receives UDP packets from clients and forwards messages to connected clients, demonstrating connectionless communication and IP address/port management.
 
-### General Tip: Allow multiple instances
-To run multiple clients at the same time:
-- **Run → Edit Configurations…**
-- Select your client configuration
-- **Modify options → Allow multiple instances**
-- Apply → OK
+### Features
 
----
+* UDP datagram communication
+* Multiple clients
+* Message broadcasting
+* IP address and port tracking
+* Connectionless communication
 
-## 1) Run TCP Chat
+### Communication Model
 
-### Step 1 — Start the server
+```text id="6uy2e0"
+Client 1 ─────┐
+Client 2 ─────┼────► UDP Server
+Client 3 ─────┘          │
+                         ▼
+                    Broadcast
+                         │
+                 ┌───────┼───────┐
+                 ▼       ▼       ▼
+              Client 1 Client 2 Client 3
+```
+
+## 3. UDP Multicast
+
+A multicast communication application implementing **one-to-many communication**.
+
+A server sends UDP datagrams to a multicast group, while multiple clients join the group and receive the same messages.
+
+### Communication Model
+
+```text id="q3uwc4"
+                 Multicast Server
+                       │
+                       ▼
+                 Multicast Group
+                   230.0.0.1
+                 ┌─────┼─────┐
+                 ▼     ▼     ▼
+              Client  Client  Client
+                 1       2       3
+```
+
+This component demonstrates the use of multicast groups for distributing the same data to multiple receivers.
+
+## Project Structure
+
+```text id="j6p8bx"
+java-networking-suite/
+│
+├── tcp/
+│   ├── Serveur.java
+│   └── Client.java
+│
+├── udp/
+│   ├── Serveur_UDP.java
+│   └── Client_UDP.java
+│
+├── multicast/
+│   ├── AgentServer.java
+│   └── AgentClient.java
+│
+├── screenshots/
+│   └── ...
+│
+└── README.md
+```
+
+## Technologies
+
+* **Java**
+* **Java Socket Programming**
+* **TCP/IP**
+* **UDP**
+* **UDP Multicast**
+* **Client-Server Architecture**
+* **Network Communication**
+* **Datagrams**
+* **IP Addressing & Ports**
+* **Multithreading**
+
+## Requirements
+
+* **Java JDK 17+**
+* IntelliJ IDEA or another Java IDE
+
+The project was designed to be easily executed and tested using IntelliJ IDEA.
+
+## How to Run
+
+### TCP Chat
+
+#### 1. Start the server
+
 Run:
-- `tcp/Serveur.java`
 
-### Step 2 — Start clients (2 or more)
-Run multiple times:
-- `tcp/Client.java`
+```text id="d1ef3q"
+tcp/Serveur.java
+```
 
-Commands:
-- Public message: type any text
-- Private message: `/msg <username> <message>`
-- List users: `/liste`
-- Quit: `/quit`
+#### 2. Start multiple clients
 
----
+Run multiple instances of:
 
-## 2) Run UDP Messaging
+```text id="m2j4ah"
+tcp/Client.java
+```
 
-### Step 1 — Start the server
+Available commands:
+
+```text id="l9j5dg"
+/msg <username> <message>
+/liste
+/quit
+```
+
+### UDP Messaging
+
+#### 1. Start the server
+
 Run:
-- `udp/Serveur_UDP.java`
 
-### Step 2 — Start clients (2 or more)
-Run multiple times:
-- `udp/Client_UDP.java`
+```text id="k1yq5j"
+udp/Serveur_UDP.java
+```
 
-Quit:
-- `exit` (or `/quit` depending on your code)
+#### 2. Start multiple clients
 
----
+Run multiple instances of:
 
-## 3) Run UDP Multicast Broadcast
+```text id="nqkvk3"
+udp/Client_UDP.java
+```
 
-### Step 1 — Start receivers first
-Run multiple times:
-- `multicast/AgentClient.java`
+To disconnect:
 
-### Step 2 — Start the broadcaster
+```text id="w9n0pj"
+exit
+```
+
+or:
+
+```text id="3v4o6p"
+/quit
+```
+
+depending on the implementation.
+
+### UDP Multicast
+
+#### 1. Start the receivers
+
+Run one or more instances of:
+
+```text id="j5z6kq"
+multicast/AgentClient.java
+```
+
+#### 2. Start the broadcaster
+
 Run:
-- `multicast/AgentServer.java`
 
-Quit (server):
-- `exit`
+```text id="f8r2as"
+multicast/AgentServer.java
+```
 
-> Note: On some networks/routers multicast may be filtered. If testing between 2 PCs doesn’t work, test on the same machine first.
+The server sends messages to the multicast group and all subscribed clients receive them.
+
+> Multicast communication can be restricted by some networks or routers. For testing, running the server and clients on the same machine is recommended.
+
+## TCP vs UDP
+
+| Feature     | TCP                    | UDP                               |
+| ----------- | ---------------------- | --------------------------------- |
+| Connection  | Connection-oriented    | Connectionless                    |
+| Reliability | Reliable               | No delivery guarantee             |
+| Ordering    | Ordered                | No ordering guarantee             |
+| Overhead    | Higher                 | Lower                             |
+| Typical use | Reliable communication | Fast datagram-based communication |
+
+### Multicast
+
+UDP Multicast enables **one-to-many communication**, where a sender transmits data to a multicast group and multiple receivers subscribed to that group can receive the same message.
+
+## Learning Objectives
+
+This project was developed to gain practical experience with:
+
+* TCP/IP communication
+* UDP datagrams
+* Java socket programming
+* Client-server architecture
+* Multi-client communication
+* IP addresses and port numbers
+* Network message broadcasting
+* Multicast groups
+* Concurrent client handling
+* Differences between TCP and UDP
+
+## Author
+
+**Farah Chaari**
+
+Software Engineer | Artificial Intelligence Machine Learning & LLM | Full-Stack Development | Business Intelligence
+
+📍 Tunisia
+
+🔗 [LinkedIn](www.linkedin.com/in/farah-chaari-1b4aa1282)
+
+🔗 [GitHub](https://github.com/farahchaari01)
+
 
 ---
 
-## 🖼️ Screenshots
+## 📄 License
 
-### TCP — Server & Clients
-![TCP Server](screenshots/tcp-server.png)
-![TCP Client 01](screenshots/tcp-client-01.png)
-![TCP Client 02](screenshots/tcp-client-02.png)
-
-### UDP — Server & Clients
-![UDP Server](screenshots/udp-server.png)
-![UDP Client 01](screenshots/udp-client-01.png)
-![UDP Client 02](screenshots/udp-client-02.png)
-
-### Multicast — Server & Clients
-![Multicast Server](screenshots/multicast-server.png)
-![Multicast Client 01](screenshots/multicast-client-01.png)
-![Multicast Client 02](screenshots/multicast-client-02.png)
-![Multicast Client 03](screenshots/multicast-client-03.png)
-
----
-
-## 🧹 Recommended `.gitignore`
-Add a `.gitignore` at the repo root to avoid committing IDE/build artifacts:
-- `.idea/`, `*.iml`
-- `out/`, `target/`, `build/`
-- `*.class`
-
----
-
-## 📌 Notes
-- TCP is **connection-oriented** (reliable, ordered).
-- UDP is **connectionless** (fast, no delivery guarantee).
-- Multicast is **one-to-many** via a group address (e.g., `230.0.0.1`).
-
----
-
-## 👤 Author
-Mohamed Abdelkader Ketata  
+This project was created for academic and educational purposes.
